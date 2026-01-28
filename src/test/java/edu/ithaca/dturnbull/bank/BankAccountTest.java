@@ -27,7 +27,22 @@ class BankAccountTest {
         assertTrue(BankAccount.isEmailValid( "a@b.com"));   // valid email address
         assertFalse( BankAccount.isEmailValid(""));         // empty string
 
-        
+
+        // prefix
+        assertFalse( BankAccount.isEmailValid("abc-@mail.com"));
+        assertFalse( BankAccount.isEmailValid("abc..def@mail.com"));
+        assertFalse(BankAccount.isEmailValid(".abc@mail.com"));
+        assertFalse(BankAccount.isEmailValid("abc#def@mail.com"));
+
+        assertTrue( BankAccount.isEmailValid("abc.def@mail.com"));
+
+        // domain
+        assertFalse( BankAccount.isEmailValid("abc.def@mail.c"));
+        assertFalse( BankAccount.isEmailValid("abc.def@mail#archive.com"));
+		assertFalse( BankAccount.isEmailValid("abc.def@mail"));
+		assertFalse( BankAccount.isEmailValid("abc.def@mail..com"));
+
+		assertTrue( BankAccount.isEmailValid("abc.def@mail.org"));
     }
 
     @Test
