@@ -23,14 +23,30 @@ class BankAccountTest {
     }
 
     @Test
-    void isEmailValidTest(){
-        assertTrue(BankAccount.isEmailValid( "a@b.com"));   // valid email address
-        assertFalse( BankAccount.isEmailValid(""));         // empty string
-        assertFalse( BankAccount.isEmailValid("ab.com"));   // missing @ symbol
-        assertFalse( BankAccount.isEmailValid("@ab.com"));  // missing characters before @ symbol
-        assertFalse( BankAccount.isEmailValid("a@bcom"));   // missing . symbol
-        
-    }
+void isEmailValidTest(){
+
+    // Equivalence class: VALID email formats
+    // Contains exactly one '@', characters before '@', and a '.' after '@'
+    // Border case: NO (this is a typical valid email)
+    assertTrue(BankAccount.isEmailValid("a@b.com"));
+
+    // Equivalence class: INVALID email formats – empty input
+    // Border case: YES (minimum-length input)
+    assertFalse(BankAccount.isEmailValid(""));
+
+    // Equivalence class: INVALID email formats – missing '@' symbol
+    // Border case: NO (general invalid format)
+    assertFalse(BankAccount.isEmailValid("ab.com"));
+
+    // Equivalence class: INVALID email formats – missing local part (before '@')
+    // Border case: YES (boundary where '@' is at index 0)
+    assertFalse(BankAccount.isEmailValid("@ab.com"));
+
+    // Equivalence class: INVALID email formats – missing '.' in domain
+    // Border case: YES (very close to valid but missing required separator)
+    assertFalse(BankAccount.isEmailValid("a@bcom"));
+}
+
 
     @Test
     void constructorTest() {
