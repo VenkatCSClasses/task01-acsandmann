@@ -39,12 +39,23 @@ public class BankAccount {
     }
 
 
-    public static boolean isEmailValid(String email){
-        if (email.indexOf('@') == -1){
-            return false;
-        }
-        else {
-            return true;
-        }
+    public static boolean isEmailValid(String email) {
+    if (email == null || email.length() == 0) {
+        return false;
     }
+
+    int atIndex = email.indexOf('@');
+    
+    if (atIndex <= 0) {
+        return false;
+    }
+
+    int dotIndex = email.indexOf('.', atIndex);
+    if (dotIndex == -1 || dotIndex == email.length() - 1) {
+        return false;
+    }
+
+    return true;
 }
+
+    }
