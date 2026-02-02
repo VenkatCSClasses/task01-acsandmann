@@ -3,56 +3,62 @@ package edu.ithaca.dturnbull.bank;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class BankAccountTest {
 
-    @Test
-    void getBalanceTest() {
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+	@Test
+	void getBalanceTest() {
+		BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
-        assertEquals(200, bankAccount.getBalance(), 0.001);
-    }
+		assertEquals(200, bankAccount.getBalance(), 0.001);
+	}
 
-    @Test
-    void withdrawTest() throws InsufficientFundsException{
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
-        bankAccount.withdraw(100);
+	@Test
+	void withdrawTest() throws InsufficientFundsException {
+		BankAccount bankAccount = new BankAccount("a@b.com", 200);
+		bankAccount.withdraw(100);
 
-        assertEquals(100, bankAccount.getBalance(), 0.001);
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(300));
-    }
+		assertEquals(100, bankAccount.getBalance(), 0.001);
+		assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(300));
 
-    @Test
-    void isEmailValidTest(){
-        assertTrue(BankAccount.isEmailValid( "a@b.com"));   // valid email address
-        assertFalse( BankAccount.isEmailValid(""));         // empty string
+		assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-50));
 
+		BankAccount bankAccount2 = new BankAccount("a@b.com", 200);
+		// withdrawing zero should be a no-op
+		bankAccount2.withdraw(0);
 
-        // prefix
-        assertFalse( BankAccount.isEmailValid("abc-@mail.com"));
-        assertFalse( BankAccount.isEmailValid("abc..def@mail.com"));
-        assertFalse(BankAccount.isEmailValid(".abc@mail.com"));
-        assertFalse(BankAccount.isEmailValid("abc#def@mail.com"));
+		assertEquals(200, bankAccount2.getBalance(), 0.001);
+	}
 
-        assertTrue( BankAccount.isEmailValid("abc.def@mail.com"));
+	@Test
+	void isEmailValidTest() {
+		assertTrue(BankAccount.isEmailValid("a@b.com")); // valid email address
+		assertFalse(BankAccount.isEmailValid("")); // empty string
 
-        // domain
-        assertFalse( BankAccount.isEmailValid("abc.def@mail.c"));
-        assertFalse( BankAccount.isEmailValid("abc.def@mail#archive.com"));
-		assertFalse( BankAccount.isEmailValid("abc.def@mail"));
-		assertFalse( BankAccount.isEmailValid("abc.def@mail..com"));
+		// prefix
+		assertFalse(BankAccount.isEmailValid("abc-@mail.com"));
+		assertFalse(BankAccount.isEmailValid("abc..def@mail.com"));
+		assertFalse(BankAccount.isEmailValid(".abc@mail.com"));
+		assertFalse(BankAccount.isEmailValid("abc#def@mail.com"));
 
-		assertTrue( BankAccount.isEmailValid("abc.def@mail.org"));
-    }
+		assertTrue(BankAccount.isEmailValid("abc.def@mail.com"));
 
-    @Test
-    void constructorTest() {
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+		// domain
+		assertFalse(BankAccount.isEmailValid("abc.def@mail.c"));
+		assertFalse(BankAccount.isEmailValid("abc.def@mail#archive.com"));
+		assertFalse(BankAccount.isEmailValid("abc.def@mail"));
+		assertFalse(BankAccount.isEmailValid("abc.def@mail..com"));
 
-        assertEquals("a@b.com", bankAccount.getEmail());
-        assertEquals(200, bankAccount.getBalance(), 0.001);
-        //check for exception thrown correctly
-        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("", 100));
-    }
+		assertTrue(BankAccount.isEmailValid("abc.def@mail.org"));
+	}
+
+	@Test
+	void constructorTest() {
+		BankAccount bankAccount = new BankAccount("a@b.com", 200);
+
+		assertEquals("a@b.com", bankAccount.getEmail());
+		assertEquals(200, bankAccount.getBalance(), 0.001);
+		// check for exception thrown correctly
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("", 100));
+	}
 
 }
