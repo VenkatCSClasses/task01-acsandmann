@@ -1,7 +1,11 @@
 package edu.ithaca.dturnbull.bank;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 class BankAccountTest {
@@ -46,6 +50,41 @@ void isEmailValidTest(){
     // Border case: YES (very close to valid but missing required separator)
     assertFalse(BankAccount.isEmailValid("a@bcom"));
 }
+
+    @Test
+    void isAmountValidTest() {
+
+    // Middle case: typical positive amount with two decimals
+    assertTrue(BankAccount.isAmountValid(10.50));
+
+    // Border case: zero amount
+    assertTrue(BankAccount.isAmountValid(0.00));
+
+    // Border case: whole number (no decimal places)
+    assertTrue(BankAccount.isAmountValid(25.0));
+
+    // Border case: one decimal place
+    assertTrue(BankAccount.isAmountValid(3.5));
+
+    // Middle case: clearly negative amount
+    assertFalse(BankAccount.isAmountValid(-10.25));
+
+    // Border case: very small negative amount
+    assertFalse(BankAccount.isAmountValid(-0.01));
+
+    // Middle case: three decimal places
+    assertFalse(BankAccount.isAmountValid(1.234));
+
+    // Border case: just barely invalid (third decimal place)
+    assertFalse(BankAccount.isAmountValid(0.001));
+
+    // Middle case: many decimal places
+    assertFalse(BankAccount.isAmountValid(12.34567));
+
+    // Middle case: negative with excessive precision
+    assertFalse(BankAccount.isAmountValid(-4.567));
+}
+
 
 
     @Test

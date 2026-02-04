@@ -57,5 +57,20 @@ public class BankAccount {
 
     return true;
 }
+    /**
+ * Determines whether a monetary amount is valid for a normal bank account.
+ *
+ * An amount is considered valid if:
+ * - it is non-negative (greater than or equal to 0)
+ * - it has no more than two digits after the decimal point
+ *
+ * @param amount the monetary amount to validate
+ * @return true if the amount is valid, false otherwise
+ */
+public static boolean isAmountValid(double amount) {
+    // Stub implementation — intentionally incorrect for test-driven development
+    return false;
+}
+
 
     }
