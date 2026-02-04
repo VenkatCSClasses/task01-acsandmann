@@ -68,9 +68,16 @@ public class BankAccount {
  * @return true if the amount is valid, false otherwise
  */
 public static boolean isAmountValid(double amount) {
-    // Stub implementation — intentionally incorrect for test-driven development
-    return false;
+    if (amount < 0) {
+        return false;
+    }
+
+    double rounded = Math.round(amount * 100) / 100.0;
+    if (rounded != amount) {
+        return false;
+    }
+
+    return true;
 }
 
-
-    }
+}

@@ -18,13 +18,27 @@ class BankAccountTest {
     }
 
     @Test
-    void withdrawTest() throws InsufficientFundsException{
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
-        bankAccount.withdraw(100);
+void withdrawTest() throws InsufficientFundsException {
+    BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
-        assertEquals(100, bankAccount.getBalance(), 0.001);
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(300));
-    }
+    bankAccount.withdraw(100);
+    assertEquals(100, bankAccount.getBalance(), 0.001);
+
+    // insufficient funds
+    assertThrows(InsufficientFundsException.class,
+            () -> bankAccount.withdraw(300));
+
+    // Equivalence class: invalid withdrawal — negative amount
+    // Border case: small negative value
+    assertThrows(IllegalArgumentException.class,
+            () -> bankAccount.withdraw(-5.00));
+
+    // Equivalence class: invalid withdrawal — too many decimal places
+    // Border case: third decimal place
+    assertThrows(IllegalArgumentException.class,
+            () -> bankAccount.withdraw(10.999));
+}
+
 
     @Test
 void isEmailValidTest(){
@@ -88,13 +102,26 @@ void isEmailValidTest(){
 
 
     @Test
-    void constructorTest() {
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+void constructorTest() {
+    BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
-        assertEquals("a@b.com", bankAccount.getEmail());
-        assertEquals(200, bankAccount.getBalance(), 0.001);
-        //check for exception thrown correctly
-        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("", 100));
-    }
+    assertEquals("a@b.com", bankAccount.getEmail());
+    assertEquals(200, bankAccount.getBalance(), 0.001);
+
+    // invalid email
+    assertThrows(IllegalArgumentException.class,
+            () -> new BankAccount("", 100));
+
+    // Equivalence class: invalid starting balance — negative amount
+    // Border case: small negative value
+    assertThrows(IllegalArgumentException.class,
+            () -> new BankAccount("a@b.com", -10.00));
+
+    // Equivalence class: invalid starting balance — too many decimal places
+    // Border case: just over two decimal places
+    assertThrows(IllegalArgumentException.class,
+            () -> new BankAccount("a@b.com", 100.001));
+}
+
 
 }
