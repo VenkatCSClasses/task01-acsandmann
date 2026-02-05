@@ -6,6 +6,20 @@ public class BankAccount {
 	private double balance;
 
 	/**
+	 * Checks whether a monetary amount is valid for normal bank account operations.
+	 *
+	 * An amount is valid if it is positive (not negative) and has at most two
+	 * decimal places.
+	 *
+	 * @param amount the money amount to validate
+	 * @return true if amount is positive and has two decimal places or less; false
+	 *         otherwise
+	 */
+	public static boolean isAmountValid(double amount) {
+		return false;
+	}
+
+	/**
 	 * @throws IllegalArgumentException if email is invalid
 	 */
 	public BankAccount(String email, double startingBalance) {

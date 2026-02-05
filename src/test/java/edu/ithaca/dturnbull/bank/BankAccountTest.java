@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BankAccountTest {
 
 	@Test
-	void getBalanceTest() {
+	void getBalanceTest() throws InsufficientFundsException {
 		BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
 		assertEquals(200, bankAccount.getBalance(), 0.001);
@@ -50,6 +50,32 @@ class BankAccountTest {
 		bankAccount2.withdraw(0);
 
 		assertEquals(200, bankAccount2.getBalance(), 0.001);
+	}
+
+	@Test
+	void isAmountValidTest() {
+		// Equivalence classes for isAmountValid(amount):
+		// 1) amount < 0 => invalid
+		// 2) amount >= 0 and has <= 2 decimal places => valid
+		// 2a) border: amount == 0
+		// 2b) border: exactly 2 decimal places
+		// 3) amount >= 0 and has > 2 decimal places => invalid
+		// 3a) border: just barely more than 2 decimal places (e.g., 1.001)
+		// 3b) middle: multiple extra decimal places (e.g., 1.23456)
+
+		// Class 1: negative amounts (border and middle)
+		assertFalse(BankAccount.isAmountValid(-0.01));
+		assertFalse(BankAccount.isAmountValid(-10.50));
+
+		// Class 2: non-negative with <= 2 decimal places (border and middle)
+		assertTrue(BankAccount.isAmountValid(0.0)); // border: zero
+		assertTrue(BankAccount.isAmountValid(10.0)); // middle: whole number
+		assertTrue(BankAccount.isAmountValid(10.5)); // border-ish: one decimal place
+		assertTrue(BankAccount.isAmountValid(10.50)); // border: two decimal places
+
+		// Class 3: non-negative with > 2 decimal places (border and middle)
+		assertFalse(BankAccount.isAmountValid(0.001)); // border: 3 decimal places
+		assertFalse(BankAccount.isAmountValid(1.23456)); // middle: many decimal places
 	}
 
 	@Test
