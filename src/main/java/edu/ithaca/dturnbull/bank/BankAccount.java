@@ -68,6 +68,34 @@ public class BankAccount {
 		}
 	}
 
+	/**
+	 * Deposits the given amount into this account.
+	 *
+	 * @param amount the amount to deposit; must be a valid monetary amount (not
+	 *               negative and with at most two decimal places)
+	 * @throws IllegalArgumentException if amount is invalid
+	 * @post increases the balance by amount if amount is valid
+	 */
+	public void deposit(double amount) {
+	}
+
+	/**
+	 * Transfers the given amount from this account to the provided destination
+	 * account.
+	 *
+	 * @param amount      the amount to transfer; must be a valid monetary amount
+	 *                    (not negative and with at most two decimal places)
+	 * @param destination the account to receive the funds; must not be null
+	 * @throws IllegalArgumentException   if amount is invalid or destination is
+	 *                                    null
+	 * @throws InsufficientFundsException if amount is greater than the current
+	 *                                    balance
+	 * @post decreases this balance by amount and increases destination balance by
+	 *       amount if amount is valid and funds are sufficient
+	 */
+	public void transfer(double amount, BankAccount destination) throws InsufficientFundsException {
+	}
+
 	public static boolean isEmailValid(String email) {
 		if (email.indexOf('@') == -1) {
 			return false;

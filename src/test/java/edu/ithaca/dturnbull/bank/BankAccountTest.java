@@ -58,6 +58,42 @@ class BankAccountTest {
 	}
 
 	@Test
+	void depositTest() {
+		// Equivalence classes for deposit(amount):
+		// 1) amount < 0 => throw IllegalArgumentException
+		// 2) amount >= 0 and has <= 2 decimal places => deposit succeeds, balance
+		// increases
+		// 2a) border: amount == 0 (no-op)
+		// 2b) border: exactly 2 decimal places
+		// 3) amount >= 0 and has > 2 decimal places => throw IllegalArgumentException
+		// 3a) border: just barely more than 2 decimal places (e.g., 0.001)
+		// 3b) middle: multiple extra decimal places (e.g., 1.23456)
+
+		BankAccount account = new BankAccount("a@b.com", 100.00);
+
+		// Class 1: negative amounts (border and middle)
+		assertThrows(IllegalArgumentException.class, () -> account.deposit(-0.01));
+		assertThrows(IllegalArgumentException.class, () -> account.deposit(-10.50));
+
+		// Class 2: valid deposits (border and middle)
+		account.deposit(0.0); // border: zero deposit is a no-op
+		assertEquals(100.00, account.getBalance(), 0.001);
+
+		account.deposit(10.0); // middle: whole number
+		assertEquals(110.00, account.getBalance(), 0.001);
+
+		account.deposit(10.50); // border: exactly 2 decimal places
+		assertEquals(120.50, account.getBalance(), 0.001);
+
+		// Class 3: too many decimal places (border and middle)
+		assertThrows(IllegalArgumentException.class, () -> account.deposit(0.001)); // border: 3 decimal places
+		assertThrows(IllegalArgumentException.class, () -> account.deposit(1.23456)); // middle: many decimal places
+
+		// ensure failed deposits do not change balance
+		assertEquals(120.50, account.getBalance(), 0.001);
+	}
+
+	@Test
 	void isAmountValidTest() {
 		// Equivalence classes for isAmountValid(amount):
 		// 1) amount < 0 => invalid
