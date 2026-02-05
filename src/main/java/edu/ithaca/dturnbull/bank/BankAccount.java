@@ -14,7 +14,6 @@ public class BankAccount {
 			return false;
 		}
 
-		// check that there are no more than 2 significant decimal places
 		double scaled = amount * 100.0;
 		return Math.abs(scaled - Math.round(scaled)) < 0.000000001;
 	}
