@@ -45,6 +45,12 @@ class BankAccountTest {
 
 		assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-50));
 
+		// invalid amounts: more than 2 decimal places should throw
+		// IllegalArgumentException
+		assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(0.001)); // border: 3 decimal places
+		assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(1.23456)); // middle: many decimal
+																							// places
+
 		BankAccount bankAccount2 = new BankAccount("a@b.com", 200);
 		// withdrawing zero should be a no-op
 		bankAccount2.withdraw(0);
@@ -108,6 +114,15 @@ class BankAccountTest {
 		assertEquals(200, bankAccount.getBalance(), 0.001);
 		// check for exception thrown correctly
 		assertThrows(IllegalArgumentException.class, () -> new BankAccount("", 100));
+
+		// invalid amounts for normal bank accounts should throw
+		// IllegalArgumentException
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("a@b.com", -0.01)); // negative (border)
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("a@b.com", -10.50)); // negative (middle)
+
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("a@b.com", 0.001)); // > 2 decimals (border)
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("a@b.com", 1.23456)); // > 2 decimals
+																									// (middle)
 	}
 
 }
