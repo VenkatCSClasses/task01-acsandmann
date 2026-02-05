@@ -94,6 +94,57 @@ class BankAccountTest {
 	}
 
 	@Test
+	void transferTest() throws InsufficientFundsException {
+		// Equivalence classes for transfer(amount, destination):
+		// 1) destination == null => throw IllegalArgumentException
+		// 2) amount invalid (amount < 0 OR > 2 decimal places) => throw
+		// IllegalArgumentException
+		// 2a) border: amount == -0.01
+		// 2b) border: amount == 0.001
+		// 3) amount valid, destination non-null, amount > balance => throw
+		// InsufficientFundsException
+		// 3a) border: amount == balance + 0.01
+		// 4) amount valid, destination non-null, amount <= balance => transfer succeeds
+		// 4a) border: amount == 0.0 (no-op)
+		// 4b) border: amount == balance (sender becomes 0)
+		// 4c) middle: 2 decimal places normal transfer (e.g., 10.50)
+
+		BankAccount from = new BankAccount("from@b.com", 100.00);
+		BankAccount to = new BankAccount("to@b.com", 20.00);
+
+		// Class 1: null destination
+		assertThrows(IllegalArgumentException.class, () -> from.transfer(10.00, null));
+		assertEquals(100.00, from.getBalance(), 0.001);
+		assertEquals(20.00, to.getBalance(), 0.001);
+
+		// Class 2: invalid amounts (negative and too many decimals)
+		assertThrows(IllegalArgumentException.class, () -> from.transfer(-0.01, to)); // border: negative
+		assertThrows(IllegalArgumentException.class, () -> from.transfer(0.001, to)); // border: 3 decimals
+		assertThrows(IllegalArgumentException.class, () -> from.transfer(1.23456, to)); // middle: many decimals
+		assertEquals(100.00, from.getBalance(), 0.001);
+		assertEquals(20.00, to.getBalance(), 0.001);
+
+		// Class 3: insufficient funds (border and middle)
+		assertThrows(InsufficientFundsException.class, () -> from.transfer(100.01, to)); // border: just over balance
+		assertThrows(InsufficientFundsException.class, () -> from.transfer(1000.00, to)); // middle: way over
+		assertEquals(100.00, from.getBalance(), 0.001);
+		assertEquals(20.00, to.getBalance(), 0.001);
+
+		// Class 4: successful transfers
+		from.transfer(0.0, to); // border: no-op
+		assertEquals(100.00, from.getBalance(), 0.001);
+		assertEquals(20.00, to.getBalance(), 0.001);
+
+		from.transfer(10.50, to); // middle: typical transfer
+		assertEquals(89.50, from.getBalance(), 0.001);
+		assertEquals(30.50, to.getBalance(), 0.001);
+
+		from.transfer(89.50, to); // border: transfer entire remaining balance
+		assertEquals(0.00, from.getBalance(), 0.001);
+		assertEquals(120.00, to.getBalance(), 0.001);
+	}
+
+	@Test
 	void isAmountValidTest() {
 		// Equivalence classes for isAmountValid(amount):
 		// 1) amount < 0 => invalid
