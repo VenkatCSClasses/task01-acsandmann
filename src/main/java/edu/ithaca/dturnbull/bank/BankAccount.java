@@ -6,13 +6,8 @@ public class BankAccount {
 	private double balance;
 
 	/**
-	 * Checks whether a monetary amount is valid for normal bank account operations.
-	 *
-	 * An amount is valid if it is not negative and has at most two decimal places.
-	 *
-	 * @param amount the money amount to validate
-	 * @return true if amount is not negative and has two decimal places or less;
-	 *         false otherwise
+	 * @param amount amount to validate
+	 * @return true iff amount >= 0 and has at most 2 decimal places
 	 */
 	public static boolean isAmountValid(double amount) {
 		if (amount < 0) {
@@ -25,7 +20,7 @@ public class BankAccount {
 	}
 
 	/**
-	 * @throws IllegalArgumentException if email is invalid
+	 * @throws IllegalArgumentException if email or startingBalance is invalid
 	 */
 	public BankAccount(String email, double startingBalance) {
 		if (!isEmailValid(email)) {
@@ -48,14 +43,9 @@ public class BankAccount {
 	}
 
 	/**
-	 * Withdraws the given amount from the account.
-	 *
-	 * @param amount the amount to withdraw; must be non-negative
-	 * @throws IllegalArgumentException   if amount is negative
-	 * @throws InsufficientFundsException if amount is greater than the current
-	 *                                    balance
-	 * @post reduces the balance by amount if amount is non-negative and less than
-	 *       or equal to balance
+	 * @param amount amount to withdraw; must be valid
+	 * @throws IllegalArgumentException   if amount is invalid
+	 * @throws InsufficientFundsException if amount > balance
 	 */
 	public void withdraw(double amount) throws InsufficientFundsException {
 		if (!isAmountValid(amount)) {
@@ -69,12 +59,8 @@ public class BankAccount {
 	}
 
 	/**
-	 * Deposits the given amount into this account.
-	 *
-	 * @param amount the amount to deposit; must be a valid monetary amount (not
-	 *               negative and with at most two decimal places)
+	 * @param amount amount to deposit; must be valid
 	 * @throws IllegalArgumentException if amount is invalid
-	 * @post increases the balance by amount if amount is valid
 	 */
 	public void deposit(double amount) {
 		if (!isAmountValid(amount)) {
@@ -84,18 +70,11 @@ public class BankAccount {
 	}
 
 	/**
-	 * Transfers the given amount from this account to the provided destination
-	 * account.
-	 *
-	 * @param amount      the amount to transfer; must be a valid monetary amount
-	 *                    (not negative and with at most two decimal places)
-	 * @param destination the account to receive the funds; must not be null
+	 * @param amount      the amount to transfer; must be valid
+	 * @param destination destination account; must not be null
 	 * @throws IllegalArgumentException   if amount is invalid or destination is
 	 *                                    null
-	 * @throws InsufficientFundsException if amount is greater than the current
-	 *                                    balance
-	 * @post decreases this balance by amount and increases destination balance by
-	 *       amount if amount is valid and funds are sufficient
+	 * @throws InsufficientFundsException if amount > balance
 	 */
 	public void transfer(double amount, BankAccount destination) throws InsufficientFundsException {
 		if (destination == null) {
@@ -112,10 +91,34 @@ public class BankAccount {
 	}
 
 	public static boolean isEmailValid(String email) {
-		if (email.indexOf('@') == -1) {
+		if (email == null || email.isEmpty())
 			return false;
-		} else {
-			return true;
-		}
+
+		// @ location
+		int at = email.indexOf('@');
+		if (at <= 0 || at != email.lastIndexOf('@') || at == email.length() - 1)
+			return false;
+
+		String local = email.substring(0, at), domain = email.substring(at + 1);
+
+		// enforce no start/end or double periods and that every char is a
+		// letter/digit/period
+		if (local.startsWith(".") || local.endsWith(".") || local.contains(".."))
+			return false;
+		if (!local.chars().allMatch(c -> Character.isLetterOrDigit(c) || c == '.'))
+			return false;
+
+		// ensure there is a domain, it has only one period but not at end or start
+		if (domain.isEmpty() || !domain.contains(".") || domain.startsWith(".") || domain.endsWith(".")
+				|| domain.contains(".."))
+			return false;
+
+		// enforce every char is letter/digit/period
+		if (!domain.chars().allMatch(c -> Character.isLetterOrDigit(c) || c == '.'))
+			return false;
+
+		// enforce tld(.com type) is at least 2 characters
+		String tld = domain.substring(domain.lastIndexOf('.') + 1);
+		return tld.length() >= 2;
 	}
 }
