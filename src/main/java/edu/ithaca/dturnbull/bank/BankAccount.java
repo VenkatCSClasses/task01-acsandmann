@@ -8,15 +8,20 @@ public class BankAccount {
 	/**
 	 * Checks whether a monetary amount is valid for normal bank account operations.
 	 *
-	 * An amount is valid if it is positive (not negative) and has at most two
-	 * decimal places.
+	 * An amount is valid if it is not negative and has at most two decimal places.
 	 *
 	 * @param amount the money amount to validate
-	 * @return true if amount is positive and has two decimal places or less; false
-	 *         otherwise
+	 * @return true if amount is not negative and has two decimal places or less;
+	 *         false otherwise
 	 */
 	public static boolean isAmountValid(double amount) {
-		return false;
+		if (amount < 0) {
+			return false;
+		}
+
+		// check that there are no more than 2 significant decimal places
+		double scaled = amount * 100.0;
+		return Math.abs(scaled - Math.round(scaled)) < 0.000000001;
 	}
 
 	/**
