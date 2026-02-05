@@ -19,9 +19,8 @@ class BankAccountTest {
 		BankAccount zero = new BankAccount("zero@b.com", 0);
 		assertEquals(0, zero.getBalance(), 0.001);
 
-		// negative starting balance
-		BankAccount negative = new BankAccount("neg@b.com", -20.5);
-		assertEquals(-20.5, negative.getBalance(), 0.001);
+		// negative starting balance should be invalid
+		assertThrows(IllegalArgumentException.class, () -> new BankAccount("neg@b.com", -20.5));
 
 		BankAccount bankAccount2 = new BankAccount("a@b.com", 100);
 
