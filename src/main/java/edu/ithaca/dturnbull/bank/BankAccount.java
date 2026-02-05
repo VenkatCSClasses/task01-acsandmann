@@ -98,6 +98,17 @@ public class BankAccount {
 	 *       amount if amount is valid and funds are sufficient
 	 */
 	public void transfer(double amount, BankAccount destination) throws InsufficientFundsException {
+		if (destination == null) {
+			throw new IllegalArgumentException("Destination account is null, cannot transfer");
+		}
+		if (!isAmountValid(amount)) {
+			throw new IllegalArgumentException("Amount: " + amount + " is invalid, cannot transfer");
+		}
+		if (amount > balance) {
+			throw new InsufficientFundsException("Not enough money");
+		}
+		this.withdraw(amount);
+		destination.deposit(amount);
 	}
 
 	public static boolean isEmailValid(String email) {
